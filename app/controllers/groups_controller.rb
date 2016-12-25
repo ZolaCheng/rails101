@@ -15,12 +15,15 @@ class GroupsController < ApplicationController
   end
 
   def create
-  @group = current_user.groups.new(group_params)
+  @group = Group.new(group_params)
+  @group.user = current_user
   if @group.save
-    redirect_to root_path
+    current_user.join!(@group)
+    redirect_to groups_path
   else
     render :new
   end
+
 end
 
 def update
@@ -63,7 +66,7 @@ def update
 
     redirect_to group_path(@group)
   end
-  
+
 private
 
 def find_group_and_check_permission
